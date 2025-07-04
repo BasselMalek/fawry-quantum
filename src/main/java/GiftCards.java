@@ -1,4 +1,7 @@
+import java.util.UUID;
+
 public class GiftCards implements Item{
+    String Id;
     String name;
     String description;
     Double price;
@@ -7,8 +10,19 @@ public class GiftCards implements Item{
         this.name = name;
         this.description = description;
         this.price = price;
+        this.Id = String.valueOf((this.name).hashCode());
+
     }
 
+    @Override
+    public String getId() {
+        return Id;
+    }
+
+    @Override
+    public int getType() {
+        return 0;
+    }
 
     @Override
     public String getName() {

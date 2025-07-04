@@ -1,4 +1,7 @@
+import java.util.UUID;
+
 public class Stables implements Item, Shippable{
+    String Id;
     String name;
     String description;
     Double price;
@@ -10,6 +13,18 @@ public class Stables implements Item, Shippable{
         this.description = description;
         this.price = price;
         this.weight = weight;
+        this.Id = String.valueOf((this.name).hashCode());
+
+    }
+
+    @Override
+    public String getId() {
+        return Id.toString();
+    }
+
+    @Override
+    public int getType() {
+        return 1;
     }
 
     @Override
