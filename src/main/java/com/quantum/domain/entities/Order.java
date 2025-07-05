@@ -1,7 +1,7 @@
 package com.quantum.domain.entities;
 
 import com.quantum.application.services.ShippingService;
-import com.quantum.domain.dtos.CartItem;
+import com.quantum.domain.dtos.QuantifiedEntry;
 import com.quantum.domain.interfaces.Item;
 
 import java.util.List;
@@ -9,14 +9,14 @@ import java.util.UUID;
 
 public class Order {
     private final String orderId;
-    private final List<CartItem> items;
+    private final List<QuantifiedEntry> items;
     private final double orderTotal;
     private String status; //should be enum but i'm not even gonna use this rn this demo already getting feature bloat;
     private final double subtotal;
     private final double shippingTotal;
 
 
-    public Order(String orderId, List<CartItem> items, String status, ShippingService shippingService) {
+    public Order(String orderId, List<QuantifiedEntry> items, String status, ShippingService shippingService) {
         this.orderId = UUID.randomUUID().toString();
         this.items = items;
         this.status = "Processing";
@@ -30,7 +30,7 @@ public class Order {
     }
 
     public double calcSubtotal() {
-        return items.stream().mapToDouble((CartItem v)->v.getItem().getPrice()).sum();
+        return items.stream().mapToDouble((QuantifiedEntry v)->v.getItem().getPrice()).sum();
     }
 
     public double calcOrderTotal(){
@@ -45,12 +45,12 @@ public class Order {
         System.out.println("Items Purchased:");
         System.out.println();
 
-        for (CartItem cartItem : items) {
-            Item item = cartItem.getItem();
+        for (QuantifiedEntry QuantifiedEntry : items) {
+            Item item = QuantifiedEntry.getItem();
             System.out.println("Item: " + item.getName());
             System.out.println("  Price: $" + String.format("%.2f", item.getPrice()));
-            System.out.println("  Quantity: " + cartItem.getQuantity());
-            System.out.println("  Total: $" + String.format("%.2f", item.getPrice() * cartItem.getQuantity()));
+            System.out.println("  Quantity: " + QuantifiedEntry.getQuantity());
+            System.out.println("  Total: $" + String.format("%.2f", item.getPrice() * QuantifiedEntry.getQuantity()));
             System.out.println();
         }
 
@@ -58,7 +58,7 @@ public class Order {
         System.out.println("VAT tax: $" + String.format("%.2f", subtotal*0.14));
         System.out.println("Shipping fees: $" + String.format("%.2f", shippingTotal));
         System.out.println("Total: $" + String.format("%.2f", calcOrderTotal()));
-        System.out.println("Items ordered: " + items.stream().mapToInt(CartItem::getQuantity).sum());
+        System.out.println("Items ordered: " + items.stream().mapToInt(QuantifiedEntry::getQuantity).sum());
         System.out.println("===============================================");
     }
 

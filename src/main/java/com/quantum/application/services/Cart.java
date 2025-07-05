@@ -1,7 +1,6 @@
 package com.quantum.application.services;
 
-import com.quantum.domain.dtos.CartItem;
-import com.quantum.domain.dtos.ItemEntry;
+import com.quantum.domain.dtos.QuantifiedEntry;
 import com.quantum.domain.interfaces.Item;
 import com.quantum.domain.interfaces.Perishable;
 import com.quantum.domain.interfaces.Shippable;
@@ -11,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Cart {
-    private final Map<String, CartItem> items = new HashMap<>();
+    private final Map<String, QuantifiedEntry> items = new HashMap<>();
     private final Inventory inventory;
 
     public Cart(Inventory inventory) {
@@ -26,7 +25,7 @@ public class Cart {
         System.out.println("=================== YOUR CART ===================");
         System.out.println();
 
-        items.forEach((String k , CartItem v)-> {
+        items.forEach((String k , QuantifiedEntry v)-> {
             Item item = v.getItem();
 
             System.out.println("Item ID: " + k);
@@ -61,26 +60,26 @@ public class Cart {
             return false;
         }
 
-        CartItem existingItem = items.get(itemId);
+        QuantifiedEntry existingItem = items.get(itemId);
         if (existingItem != null) {
             existingItem.setQuantity(existingItem.getQuantity()+ quantity);
         } else {
-            ItemEntry inventoryItem = inventory.getItem(itemId, type);
+            QuantifiedEntry inventoryItem = inventory.getItem(itemId, type);
             if (inventoryItem != null) {
-                items.put(itemId, new CartItem(inventoryItem.getItem(), quantity));
+                items.put(itemId, new QuantifiedEntry(inventoryItem.getItem(), quantity));
             }
         }
         return true;
     }
 
     public boolean removeItem(String itemId, int quantity) {
-        CartItem cartItem = items.get(itemId);
-        if (cartItem == null) {
+        QuantifiedEntry QuantifiedEntry = items.get(itemId);
+        if (QuantifiedEntry == null) {
             return false;
         }
-        cartItem.setQuantity(cartItem.getQuantity()- quantity);
+        QuantifiedEntry.setQuantity(QuantifiedEntry.getQuantity()- quantity);
 
-        if (cartItem.getQuantity() <= 0) {
+        if (QuantifiedEntry.getQuantity() <= 0) {
             items.remove(itemId);
         }
         return true;
@@ -104,7 +103,7 @@ public class Cart {
         return items.isEmpty();
     }
 
-    public Map<String, CartItem> getItems() {
+    public Map<String, QuantifiedEntry> getItems() {
         return new HashMap<>(items);
     }
 

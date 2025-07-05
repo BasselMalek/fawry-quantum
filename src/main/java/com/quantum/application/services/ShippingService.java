@@ -1,6 +1,6 @@
 package com.quantum.application.services;
 
-import com.quantum.domain.dtos.CartItem;
+import com.quantum.domain.dtos.QuantifiedEntry;
 import com.quantum.domain.interfaces.Item;
 import com.quantum.domain.interfaces.Shippable;
 
@@ -17,8 +17,8 @@ public class ShippingService {
     }
 
 
-    public void createInternalShippingOrder(String id, String address, List<CartItem> items) {
-        List<CartItem> shippableItems = items.stream()
+    public void createInternalShippingOrder(String id, String address, List<QuantifiedEntry> items) {
+        List<QuantifiedEntry> shippableItems = items.stream()
                 .filter(ci -> ci.getItem() instanceof Shippable)
                 .collect(Collectors.toList());
 
@@ -32,7 +32,7 @@ public class ShippingService {
         return order != null ? order.getPrice() : 0.0;
     }
 
-    public static double calculateShippingEstimate(List<CartItem> items) {
+    public static double calculateShippingEstimate(List<QuantifiedEntry> items) {
         double totalWeight = items.stream().filter(ci -> ci.getItem() instanceof Shippable).mapToDouble(ci -> ((Shippable) ci.getItem()).getWeight() * ci.getQuantity())
                 .sum();
         double price = 15 + totalWeight * 0.75;
@@ -48,7 +48,7 @@ public class ShippingService {
         }
     }
 
-    private double calculateShippingFees(List<CartItem> items) {
+    private double calculateShippingFees(List<QuantifiedEntry> items) {
         double totalWeight = items.stream()
                 .mapToDouble(ci -> ((Shippable) ci.getItem()).getWeight() * ci.getQuantity())
                 .sum();
@@ -62,10 +62,10 @@ public class ShippingService {
 class ShippingOrder {
     private final String id;
     private final String address;
-    private final List<CartItem> items;
+    private final List<QuantifiedEntry> items;
     private final double price;
 
-    public ShippingOrder(String id, String address, List<CartItem> items, double price) {
+    public ShippingOrder(String id, String address, List<QuantifiedEntry> items, double price) {
         this.id = id;
         this.address = address;
         this.items = items;
@@ -81,16 +81,16 @@ class ShippingOrder {
         System.out.println("Items to Ship:");
         System.out.println();
 
-        for (CartItem cartItem : items) {
-            Item item = cartItem.getItem();
+        for (QuantifiedEntry QuantifiedEntry : items) {
+            Item item = QuantifiedEntry.getItem();
             System.out.println("Item: " + item.getName());
             System.out.println("  Weight: " + String.format("%.2f", ((Shippable)item).getWeight()) + " lbs");
-            System.out.println("  Quantity: " + cartItem.getQuantity());
+            System.out.println("  Quantity: " + QuantifiedEntry.getQuantity());
             System.out.println();
         }
 
         double totalWeight = items.stream().mapToDouble(ci -> ((Shippable)ci.getItem()).getWeight() * ci.getQuantity()).sum();
-        int totalItems = items.stream().mapToInt(CartItem::getQuantity).sum();
+        int totalItems = items.stream().mapToInt(QuantifiedEntry::getQuantity).sum();
         System.out.println("Total Weight: " + String.format("%.2f", totalWeight) + " lbs");
         System.out.println("Total Items: " + totalItems);
         System.out.println("===============================================");

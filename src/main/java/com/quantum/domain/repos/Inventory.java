@@ -1,6 +1,6 @@
 package com.quantum.domain.repos;
 
-import com.quantum.domain.dtos.ItemEntry;
+import com.quantum.domain.dtos.QuantifiedEntry;
 import com.quantum.domain.interfaces.Item;
 import com.quantum.domain.interfaces.Perishable;
 import com.quantum.domain.interfaces.Shippable;
@@ -9,25 +9,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Inventory {
-    private final Map<String, ItemEntry> perishableItems = new HashMap<>();
-    private final Map<String, ItemEntry> stableItems = new HashMap<>();
-    private final Map<String, ItemEntry> onlineItems = new HashMap<>();
+    private final Map<String, QuantifiedEntry> perishableItems = new HashMap<>();
+    private final Map<String, QuantifiedEntry> stableItems = new HashMap<>();
+    private final Map<String, QuantifiedEntry> onlineItems = new HashMap<>();
 
     public void addItem(Item item, int quantity) {
         switch (item.getType()) {
             case 0:
-                onlineItems.put(item.getId(), new ItemEntry(item, quantity));
+                onlineItems.put(item.getId(), new QuantifiedEntry(item, quantity));
                 break;
             case 1:
-                stableItems.put(item.getId(), new ItemEntry(item, quantity));
+                stableItems.put(item.getId(), new QuantifiedEntry(item, quantity));
                 break;
             case 2:
-                perishableItems.put(item.getId(), new ItemEntry(item, quantity));
+                perishableItems.put(item.getId(), new QuantifiedEntry(item, quantity));
                 break;
         }
     }
 
-    public ItemEntry getItem(String id, int type) {
+    public QuantifiedEntry getItem(String id, int type) {
         switch (type) {
             case 0:
                 return onlineItems.get(id);
@@ -42,7 +42,7 @@ public class Inventory {
         return null;
     }
 
-    public HashMap<String, ItemEntry> getItems(int type) {
+    public HashMap<String, QuantifiedEntry> getItems(int type) {
         switch (type) {
             case 0:
                 return new HashMap<>(onlineItems);
@@ -58,7 +58,7 @@ public class Inventory {
     }
 
     public void updateQuantity(String id, int type, int newQuantity) {
-        ItemEntry entry = getItem(id, type);
+        QuantifiedEntry entry = getItem(id, type);
         if (entry != null) {
             entry.setQuantity(newQuantity);
         }
@@ -74,7 +74,7 @@ public class Inventory {
     }
 
     public boolean hasItem(String id, int quantity, int type) {
-        ItemEntry i = getItem(id, type);
+        QuantifiedEntry i = getItem(id, type);
         if (i == null || i.getItem() == null || i.getQuantity() < quantity) {
             return false;
         }
@@ -89,7 +89,7 @@ public class Inventory {
     }
 
     public void displayItems(int type) {
-        HashMap<String, ItemEntry> items = this.getItems(type);
+        HashMap<String, QuantifiedEntry> items = this.getItems(type);
         if (items == null || items.isEmpty()) {
             System.out.println("No items available.");
             return;
@@ -98,9 +98,9 @@ public class Inventory {
         System.out.println("================== INVENTORY ==================");
         System.out.println();
 
-        for (Map.Entry<String, ItemEntry> entry : items.entrySet()) {
-            ItemEntry itemEntry = entry.getValue();
-            Item item = itemEntry.getItem();
+        for (Map.Entry<String, QuantifiedEntry> entry : items.entrySet()) {
+            QuantifiedEntry quantifiedEntry = entry.getValue();
+            Item item = quantifiedEntry.getItem();
 
             System.out.println("Item ID: " + item.getId());
             System.out.println("  Name: " + item.getName());
@@ -119,7 +119,7 @@ public class Inventory {
                 System.out.println("  Expiry Date: N/A");
             }
 
-            System.out.println("  Quantity Available: " + itemEntry.getQuantity());
+            System.out.println("  Quantity Available: " + quantifiedEntry.getQuantity());
             System.out.println();
         }
 

@@ -2,11 +2,11 @@ package com.quantum.domain.dtos;
 
 import com.quantum.domain.interfaces.Item;
 
-public class ItemEntry {
+public class QuantifiedEntry {
         private final Item item;
         private int quantity;
 
-        public ItemEntry(Item item, int quantity){
+        public QuantifiedEntry(Item item, int quantity){
             this.item = item;
             this.quantity = quantity;
         }

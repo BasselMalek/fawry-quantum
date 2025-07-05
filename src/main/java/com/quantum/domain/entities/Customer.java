@@ -2,7 +2,7 @@ package com.quantum.domain.entities;
 
 import com.quantum.application.services.Cart;
 import com.quantum.application.services.ShippingService;
-import com.quantum.domain.dtos.CartItem;
+import com.quantum.domain.dtos.QuantifiedEntry;
 import com.quantum.domain.repos.Inventory;
 
 import java.util.ArrayList;
@@ -66,14 +66,14 @@ public class Customer extends User {
         }
         //Check if the store is broke
         // after implementing the cart this whole part kinda redundant
-//        for (CartItem item : currentCart.getItems()) {
+//        for (QuantifiedEntry item : currentCart.getItems()) {
 //            if (!inventory.hasItem(item.getProduct().getId(), item.getQuantity(), item.getProduct().getgetType())) {
 //                System.out.println("Error: " + item.getProduct().getName() + " is out of stock or expired");
 //                return false;
 //            }
 //        }
         //Update cx and store
-        for (CartItem item : currentCart.getItems().values()) {
+        for (QuantifiedEntry item : currentCart.getItems().values()) {
             inventory.updateQuantity(item.getItem().getName(), item.getItem().getType(), inventory.getItem(item.getItem().getId(), item.getItem().getType()).getQuantity() - item.getQuantity());
         }
         modifyBalance(-order.getOrderTotal());
