@@ -50,13 +50,13 @@ public class Cart {
         });
 
         System.out.println("Subtotal: $" + String.format("%.2f",getSubtotal()));
+        System.out.println("VAT Tax: $" + String.format("%.2f",getSubtotal()*0.14));
         System.out.println("Shipping: $" + String.format("%.2f",getShippingFee()));
         System.out.println("Total: $" + String.format("%.2f",getTotal()));
         System.out.println("===============================================");
    }
     public boolean addItem(String itemId, int type, int quantity) {
-        if (!inventory.hasItem(itemId, quantity, type)) {
-            System.out.println("hit");
+        if (quantity<1||!inventory.hasItem(itemId, quantity, type)) {
             return false;
         }
 

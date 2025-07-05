@@ -17,7 +17,7 @@ public class Order {
 
 
     public Order(String orderId, List<QuantifiedEntry> items, String status, ShippingService shippingService) {
-        this.orderId = UUID.randomUUID().toString();
+        this.orderId = orderId;
         this.items = items;
         this.status = "Processing";
         this.subtotal = calcSubtotal();

@@ -85,6 +85,8 @@ public class Main {
             }
             while (loggedInUser != null) {
                 System.out.println();
+                System.out.println("New balance: $" + String.format("%.2f", cx.getBalance()));
+                System.out.println();
                 System.out.println("1. Browse Products");
                 System.out.println("2. View Cart");
                 System.out.println("3. Checkout");

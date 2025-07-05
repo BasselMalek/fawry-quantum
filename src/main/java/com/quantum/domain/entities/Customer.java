@@ -74,13 +74,14 @@ public class Customer extends User {
 //        }
         //Update cx and store
         for (QuantifiedEntry item : currentCart.getItems().values()) {
-            inventory.updateQuantity(item.getItem().getName(), item.getItem().getType(), inventory.getItem(item.getItem().getId(), item.getItem().getType()).getQuantity() - item.getQuantity());
+            inventory.updateQuantity(item.getItem().getId(), item.getItem().getType(), inventory.getItem(item.getItem().getId(), item.getItem().getType()).getQuantity() - item.getQuantity());
         }
         modifyBalance(-order.getOrderTotal());
         currentCart.clear();
         order.setStatus("Processing");
         shippingService.printShippingOrderReceipt(orderId);
         order.printReceipt();
+        System.out.println("New balance: $" + String.format("%.2f", balance));
         System.out.println("Order completed successfully!");
         return true;
     }
