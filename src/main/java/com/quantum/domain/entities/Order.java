@@ -5,7 +5,6 @@ import com.quantum.domain.dtos.QuantifiedEntry;
 import com.quantum.domain.interfaces.Item;
 
 import java.util.List;
-import java.util.UUID;
 
 public class Order {
     private final String orderId;
@@ -19,7 +18,7 @@ public class Order {
     public Order(String orderId, List<QuantifiedEntry> items, String status, ShippingService shippingService) {
         this.orderId = orderId;
         this.items = items;
-        this.status = "Processing";
+        this.status = status;
         this.subtotal = calcSubtotal();
         this.shippingTotal = shippingService.getOrderPrice(this.orderId);
         this.orderTotal = calcOrderTotal();
