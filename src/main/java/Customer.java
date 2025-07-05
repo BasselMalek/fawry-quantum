@@ -4,13 +4,13 @@ import java.util.List;
 public class Customer extends User {
     private double balance;
     private Cart currentCart;
-    private List<Order> orderHistory;
+//    private List<Order> orderHistory;
 
-    public Customer(String username, String email, String password, double initialBalance) {
+    public Customer(String username, String email, String password, double initialBalance, Inventory inventory) {
         super(username, email, password);
         this.balance = initialBalance;
-        this.currentCart = new Cart();
-        this.orderHistory = new ArrayList<>();
+        this.currentCart = new Cart(inventory);
+//        this.orderHistory = new ArrayList<>();
     }
 
     public double getBalance() {
@@ -21,9 +21,9 @@ public class Customer extends User {
         return currentCart;
     }
 
-    public List<Order> getOrderHistory() {
-        return new ArrayList<>(orderHistory);
-    }
+//    public List<Order> getOrderHistory() {
+//        return new ArrayList<>(orderHistory);
+//    }
 
     public boolean modifyBalance(double amount) {
         if (this.balance + amount >= 0) {
@@ -40,8 +40,8 @@ public class Customer extends User {
         }
 
         double subtotal = currentCart.getSubtotal();
-        double shippingFee = currentCart.calculateShippingFee();
-        double total = subtotal + shippingFee;
+        double shippingFee = currentCart.getShippingFee();
+        double total = currentCart.getTotal();
         // Check if cx is broke
         if (balance < total) {
             System.out.println("Error: Insufficient balance");
@@ -49,23 +49,24 @@ public class Customer extends User {
             return false;
         }
         //Check if the store is broke
-        for (CartItem item : currentCart.getItems()) {
-            if (!inventory.hasItem(item.getProduct().getId(), item.getQuantity(), item.getProduct().getgetType())) {
-                System.out.println("Error: " + item.getProduct().getName() + " is out of stock or expired");
-                return false;
-            }
-        }
+        // after implementing the cart this whole part kinda redundant
+//        for (CartItem item : currentCart.getItems()) {
+//            if (!inventory.hasItem(item.getProduct().getId(), item.getQuantity(), item.getProduct().getgetType())) {
+//                System.out.println("Error: " + item.getProduct().getName() + " is out of stock or expired");
+//                return false;
+//            }
+//        }
         //Update cx and store
-        for (CartItem item : currentCart.getItems()) {
-            inventory.reduceQuantity(item.getProduct().getName(), item.getQuantity());
+        for (CartItem item : currentCart.getItems().values()) {
+            inventory.updateQuantity(item.item.getName(), item.item.getType(), inventory.getItem(item.item.getId(), item.item.getType()).quantity -item.quantity);
         }
         modifyBalance(-total);
 
         //Add to history and print
-        Order order = new Order(this, new ArrayList<>(currentCart.getItems()), subtotal, shippingFee);
-        orderHistory.add(order);
-        order.printCheckoutDetails();
-        clearCart();
+//        Order order = new Order(this, new ArrayList<>(currentCart.getItems()), subtotal, shippingFee);
+//        orderHistory.add(order);
+//        order.printCheckoutDetails();
+        currentCart.clear();
         System.out.println("Order completed successfully!");
         // ShippingService.handleShipment(order);
         return true;
@@ -81,39 +82,39 @@ public class Customer extends User {
         System.out.printf("Remaining balance: $%.2f%n", balance);
     }
 
-    private void handleShipping() {
-        List<ShippableProduct> shippableItems = new ArrayList<>();
-
-        for (CartItem item : currentCart.getItems()) {
-            if (item.getProduct().isShippable()) {
-                shippableItems.add(item.getProduct());
-            }
-        }
-
-        if (!shippableItems.isEmpty()) {
-            ShippingService shippingService = new ShippingService();
-            shippingService.processShippableItems(shippableItems);
-        }
-    }
-
-    // Utility methods
-    public void viewCart() {
-        currentCart.displayCart();
-    }
-
-    public void viewOrderHistory() {
-        System.out.println("\n=== ORDER HISTORY ===");
-        if (orderHistory.isEmpty()) {
-            System.out.println("No previous orders.");
-            return;
-        }
-
-        for (int i = 0; i < orderHistory.size(); i++) {
-            System.out.println("Order #" + (i + 1));
-            orderHistory.get(i).displayOrder();
-            System.out.println();
-        }
-    }
+//    private void handleShipping() {
+//        List<ShippableProduct> shippableItems = new ArrayList<>();
+//
+//        for (CartItem item : currentCart.getItems()) {
+//            if (item.getProduct().isShippable()) {
+//                shippableItems.add(item.getProduct());
+//            }
+//        }
+//
+//        if (!shippableItems.isEmpty()) {
+//            ShippingService shippingService = new ShippingService();
+//            shippingService.processShippableItems(shippableItems);
+//        }
+//    }
+//
+//    // Utility methods
+//    public void viewCart() {
+//        currentCart.displayCart();
+//    }
+//
+//    public void viewOrderHistory() {
+//        System.out.println("\n=== ORDER HISTORY ===");
+//        if (orderHistory.isEmpty()) {
+//            System.out.println("No previous orders.");
+//            return;
+//        }
+//
+//        for (int i = 0; i < orderHistory.size(); i++) {
+//            System.out.println("Order #" + (i + 1));
+//            orderHistory.get(i).displayOrder();
+//            System.out.println();
+//        }
+//    }
 
     @Override
     public String toString() {

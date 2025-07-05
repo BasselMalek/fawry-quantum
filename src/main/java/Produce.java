@@ -54,4 +54,9 @@ public class Produce implements Perishable, Shippable, Item {
     public Date getExpiryDate() {
         return expiryDate;
     }
+
+    @Override
+    public Boolean isExpired() {
+        return this.getExpiryDate().before(new Date());
+    }
 }

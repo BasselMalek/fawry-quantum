@@ -2,8 +2,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Cart {
-    private Map<String, CartItem> items = new HashMap<>();
-    private Inventory inventory;
+    private final Map<String, CartItem> items = new HashMap<>();
+    private final Inventory inventory;
 
     public Cart(Inventory inventory) {
         this.inventory = inventory;
@@ -71,16 +71,5 @@ public class Cart {
 
     public void clear() {
         items.clear();
-    }
-
-    // Inner class for cart items
-    public static class CartItem {
-        public final Item item;
-        public int quantity;
-
-        public CartItem(Item item, int quantity) {
-            this.item = item;
-            this.quantity = quantity;
-        }
     }
 }

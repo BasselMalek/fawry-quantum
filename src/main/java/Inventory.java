@@ -2,7 +2,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-class Inventory {
+public class Inventory {
     private final Map<String, ItemEntry> perishableItems = new HashMap<>();
     private final Map<String, ItemEntry> stableItems = new HashMap<>();
     private final Map<String, ItemEntry> onlineItems = new HashMap<>();
@@ -69,7 +69,7 @@ class Inventory {
 
     public boolean hasItem(String id, int quantity ,int type) {
         ItemEntry i = getItem(id, type);
-        return i != null && i.getItem() != null && i.quantity >= quantity;
+        return i != null && i.getItem() != null && i.quantity >= quantity && (i.getItem().getType()==2)?!((Produce)i.getItem()).isExpired():true;
     }
     public int getTotalItems() {
         return onlineItems.size() + stableItems.size() + perishableItems.size();
@@ -78,7 +78,7 @@ class Inventory {
     public void cleanUpPerishables() {
         perishableItems.entrySet().removeIf(entry -> {
             Perishable perishable = (Perishable) entry.getValue().getItem();
-            return perishable.getExpiryDate().before(new Date());
+            return perishable.isExpired();
         });
     }
 

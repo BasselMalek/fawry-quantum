@@ -1,12 +1,10 @@
-import java.util.UUID;
-
-public class GiftCards implements Item{
+public class GiftCard implements Item{
     String Id;
     String name;
     String description;
     Double price;
 
-    public GiftCards(String name, String description, Double price) {
+    public GiftCard(String name, String description, Double price) {
         this.name = name;
         this.description = description;
         this.price = price;

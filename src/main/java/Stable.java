@@ -1,6 +1,4 @@
-import java.util.UUID;
-
-public class Stables implements Item, Shippable{
+public class Stable implements Item, Shippable{
     String Id;
     String name;
     String description;
@@ -8,7 +6,7 @@ public class Stables implements Item, Shippable{
 
     Double weight;
 
-    public Stables(String name, String description, Double price, Double weight) {
+    public Stable(String name, String description, Double price, Double weight) {
         this.name = name;
         this.description = description;
         this.price = price;
