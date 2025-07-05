@@ -67,119 +67,120 @@ public class Main {
         LocalDate cheeseExpiry = today.minusDays(2);
         inventory.addItem(new Produce("Cheese", "Cheddar cheese 8oz", 4.99, 0.5, cheeseExpiry), 3);
         ShippingService shippingService = new ShippingService();
-        Customer cx = new Customer("poorQA", "poorQA@fawry.com", "qa123", "Giza Pyramids",1800.0, inventory, shippingService);
+        Customer cx = new Customer("poorQA", "poorQA@fawry.com", "qa123", "Giza Pyramids", 180.0, inventory, shippingService);
 
-        loggedInUser = cx;
-        System.out.println("Hi to Benji's Supermarket!");
-        System.out.println("Log in to continue");
-        System.out.println();
-//        System.out.print("Email: ");
-//        String email = scanner.nextLine();
-//        System.out.print("Password: ");
-//        String password = scanner.nextLine();
-//        if (cx.verifyLogin(email, password)) {
-//            loggedInUser = cx;
-//        } else {
-//            System.out.println("Invalid Data.");
-//        }
-        while (loggedInUser != null) {
+        while (true) {
+            System.out.println("Hi to Benji's Supermarket!");
+            System.out.println("Log in to continue");
+            System.out.println();
+            System.out.print("Email: ");
+            String email = scanner.nextLine();
+            System.out.print("Password: ");
+            String password = scanner.nextLine();
+            if (cx.verifyLogin(email, password)) {
+                loggedInUser = cx;
             System.out.println("Logged in!");
-            System.out.println();
-            System.out.println("1. Browse Products");
-            System.out.println("2. View Cart");
-            System.out.println("3. Checkout");
-            System.out.println("4. Refresh store (makes sure all produce are not expired)");
-            System.out.println("5. Log Out");
-            System.out.println();
-            System.out.print("Choose an option: ");
-            int choice = scanner.nextInt();
-            switch (choice) {
-                case 1:
-                    System.out.println();
-                    System.out.println("Product Categories:");
-                    System.out.println("1. Produce");
-                    System.out.println("2. Shelf-Stables");
-                    System.out.println("3. Gift Cards");
-                    System.out.println();
-                    System.out.print("Select category: ");
-                    int categoryChoice = scanner.nextInt();
-                    switch (categoryChoice) {
-                        case 1:
-                            System.out.println();
-                            System.out.println("Produce Inventory:");
-                            inventory.displayItems(2);
-                            System.out.println();
-                            System.out.print("Enter item ID to add to cart or enter q to go back: ");
-                            String produceId = scanner.next();
-                            if (produceId.equals("q")) {
+            } else {
+                System.out.println("Invalid Data.");
+            }
+            while (loggedInUser != null) {
+                System.out.println();
+                System.out.println("1. Browse Products");
+                System.out.println("2. View Cart");
+                System.out.println("3. Checkout");
+                System.out.println("4. Refresh store (makes sure all produce are not expired)");
+                System.out.println("5. Log Out");
+                System.out.println();
+                System.out.print("Choose an option: ");
+                int choice = scanner.nextInt();
+                switch (choice) {
+                    case 1:
+                        System.out.println();
+                        System.out.println("Product Categories:");
+                        System.out.println("1. Produce");
+                        System.out.println("2. Shelf-Stables");
+                        System.out.println("3. Gift Cards");
+                        System.out.println();
+                        System.out.print("Select category: ");
+                        int categoryChoice = scanner.nextInt();
+                        switch (categoryChoice) {
+                            case 1:
+                                System.out.println();
+                                System.out.println("Produce Inventory:");
+                                inventory.displayItems(2);
+                                System.out.println();
+                                System.out.print("Enter item ID to add to cart or enter q to go back: ");
+                                String produceId = scanner.next();
+                                if (produceId.equals("q")) {
+                                    break;
+                                }
+                                System.out.print("Enter desired quantity to add to cart: ");
+                                int quantity = scanner.nextInt();
+                                if (((Customer) loggedInUser).getCurrentCart().addItem(produceId, 2, quantity)) {
+                                    System.out.println("Item added to cart!");
+                                } else {
+                                    System.out.println("Invalid input.");
+                                }
                                 break;
-                            }
-                            System.out.print("Enter desired quantity to add to cart: ");
-                            int quantity = scanner.nextInt();
-                            if (((Customer) loggedInUser).getCurrentCart().addItem(produceId, 2, quantity)) {
-                                System.out.println("Item added to cart!");
-                            } else {
-                                System.out.println("Invalid input.");
-                            }
-                            break;
-                        case 2:
-                            System.out.println();
-                            System.out.println("Shelf-Stables Inventory:");
-                            inventory.displayItems(1);
-                            System.out.println();
-                            System.out.print("Enter item ID to add to cart or enter q to go back: ");
-                            String shelfId = scanner.next();
-                            if (shelfId.equals("q")) {
+                            case 2:
+                                System.out.println();
+                                System.out.println("Shelf-Stables Inventory:");
+                                inventory.displayItems(1);
+                                System.out.println();
+                                System.out.print("Enter item ID to add to cart or enter q to go back: ");
+                                String shelfId = scanner.next();
+                                if (shelfId.equals("q")) {
+                                    break;
+                                }
+                                System.out.print("Enter desired quantity to add to cart: ");
+                                int sQuantity = scanner.nextInt();
+                                if (((Customer) loggedInUser).getCurrentCart().addItem(shelfId, 1, sQuantity)) {
+                                    System.out.println("Item added to cart!");
+                                } else {
+                                    System.out.println("Invalid input.");
+                                }
                                 break;
-                            }
-                            System.out.print("Enter desired quantity to add to cart: ");
-                            int sQuantity = scanner.nextInt();
-                            if (((Customer) loggedInUser).getCurrentCart().addItem(shelfId, 1, sQuantity)) {
-                                System.out.println("Item added to cart!");
-                            } else {
-                                System.out.println("Invalid input.");
-                            }
-                            break;
-                        case 3:
-                            System.out.println();
-                            System.out.println("Gift Cards Inventory:");
-                            inventory.displayItems(0);
-                            System.out.println();
-                            System.out.print("Enter item ID to add to cart or enter q to go back: ");
-                            String giftId = scanner.next();
-                            if (giftId.equals("q")) {
+                            case 3:
+                                System.out.println();
+                                System.out.println("Gift Cards Inventory:");
+                                inventory.displayItems(0);
+                                System.out.println();
+                                System.out.print("Enter item ID to add to cart or enter q to go back: ");
+                                String giftId = scanner.next();
+                                if (giftId.equals("q")) {
+                                    break;
+                                }
+                                System.out.print("Enter desired quantity to add to cart: ");
+                                int gQuantity = scanner.nextInt();
+                                if (((Customer) loggedInUser).getCurrentCart().addItem(giftId, 0, gQuantity)) {
+                                    System.out.println("Item added to cart!");
+                                } else {
+                                    System.out.println("Invalid input.");
+                                }
                                 break;
-                            }
-                            System.out.print("Enter desired quantity to add to cart: ");
-                            int gQuantity = scanner.nextInt();
-                            if (((Customer) loggedInUser).getCurrentCart().addItem(giftId, 0, gQuantity)) {
-                                System.out.println("Item added to cart!");
-                            } else {
-                                System.out.println("Invalid input.");
-                            }
-                            break;
-                    }
-                    break;
-                case 2:
-                    ((Customer) loggedInUser).getCurrentCart().displayCart();
-                    System.out.print("Enter item ID to remove from cart or enter q to go back: ");
-                    String id = scanner.next();
-                    if (id.equals("q")) {
+                        }
                         break;
-                    }
-                    System.out.print("Enter desired quantity to remove from cart: ");
-                    int quantity = scanner.nextInt();
-                    ((Customer) loggedInUser).getCurrentCart().removeItem(id, quantity);
-                    break;
-                case 3:
-                    boolean checkout = ((Customer) loggedInUser).checkout(inventory);
-                    break;
-                case 4:
-                    inventory.cleanUpPerishables();
-                    break;
-                case 5:
-                    loggedInUser = null;
-                    break;
+                    case 2:
+                        ((Customer) loggedInUser).getCurrentCart().displayCart();
+                        System.out.print("Enter item ID to remove from cart or enter q to go back: ");
+                        String id = scanner.next();
+                        if (id.equals("q")) {
+                            break;
+                        }
+                        System.out.print("Enter desired quantity to remove from cart: ");
+                        int quantity = scanner.nextInt();
+                        ((Customer) loggedInUser).getCurrentCart().removeItem(id, quantity);
+                        break;
+                    case 3:
+                        boolean checkout = ((Customer) loggedInUser).checkout(inventory);
+                        break;
+                    case 4:
+                        inventory.cleanUpPerishables();
+                        break;
+                    case 5:
+                        loggedInUser = null;
+                        break;
+                }
             }
         }
     }

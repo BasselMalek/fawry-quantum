@@ -30,7 +30,7 @@ public class Order {
     }
 
     public double calcSubtotal() {
-        return items.stream().mapToDouble((QuantifiedEntry v)->v.getItem().getPrice()).sum();
+        return items.stream().mapToDouble((QuantifiedEntry v)->v.getItem().getPrice()*v.getQuantity()).sum();
     }
 
     public double calcOrderTotal(){
