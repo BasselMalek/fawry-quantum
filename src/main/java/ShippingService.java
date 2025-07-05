@@ -8,13 +8,6 @@ public class ShippingService {
         this.shippingOrders = new HashMap<>();
     }
 
-    public static double calculateShippingEstimate(List<CartItem> items) {
-        double totalWeight = items.stream()
-                .filter(ci -> ci.getItem() instanceof Shippable)
-                .mapToDouble(ci -> ((Shippable) ci.getItem()).getWeight() * ci.getQuantity())
-                .sum();
-        return 15 + totalWeight *0.75;
-    }
 
     public void createInternalShippingOrder(String id, String address, List<CartItem> items) {
         List<CartItem> shippableItems = items.stream()
@@ -31,7 +24,14 @@ public class ShippingService {
         return order != null ? order.getPrice() : 0.0;
     }
 
-    public void printShippingOrderrReceipt(String orderId){
+    public static double calculateShippingEstimate(List<CartItem> items) {
+        double totalWeight = items.stream().filter(ci -> ci.getItem() instanceof Shippable).mapToDouble(ci -> ((Shippable) ci.getItem()).getWeight() * ci.getQuantity())
+                .sum();
+        double price = 15 + totalWeight * 0.75;
+        return totalWeight==0.0?0.0:price;
+    }
+
+    public void printShippingOrderReceipt(String orderId){
         ShippingOrder order = shippingOrders.get(orderId);
         if (order != null){
             order.printShippingManifest();
@@ -44,6 +44,7 @@ public class ShippingService {
         double totalWeight = items.stream()
                 .mapToDouble(ci -> ((Shippable) ci.getItem()).getWeight() * ci.getQuantity())
                 .sum();
-        return 15 + totalWeight * 0.75;
+        double price = 15 + totalWeight * 0.75;
+        return totalWeight==0.0?0.0:price;
     }
 }

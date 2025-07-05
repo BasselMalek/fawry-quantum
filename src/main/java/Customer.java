@@ -72,7 +72,7 @@ public class Customer extends User {
         modifyBalance(-order.getOrderTotal());
         currentCart.clear();
         order.setStatus("Processing");
-        shippingService.printShippingOrderrReceipt(orderId);
+        shippingService.printShippingOrderReceipt(orderId);
         order.printReceipt();
         System.out.println("Order completed successfully!");
         return true;
