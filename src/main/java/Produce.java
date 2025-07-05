@@ -1,5 +1,5 @@
+import java.time.LocalDate;
 import java.util.Date;
-import java.util.UUID;
 
 public class Produce implements Perishable, Shippable, Item {
     String Id;
@@ -8,9 +8,9 @@ public class Produce implements Perishable, Shippable, Item {
     Double price;
 
     Double weight;
-    Date expiryDate;
+    LocalDate expiryDate;
 
-    public Produce(String name, String description, Double price, Double weight, Date expiryDate) {
+    public Produce(String name, String description, Double price, Double weight, LocalDate expiryDate) {
 
         this.name = name;
         this.description = description;
@@ -51,12 +51,12 @@ public class Produce implements Perishable, Shippable, Item {
     }
 
     @Override
-    public Date getExpiryDate() {
+    public LocalDate getExpiryDate() {
         return expiryDate;
     }
 
     @Override
     public Boolean isExpired() {
-        return this.getExpiryDate().before(new Date());
+        return this.getExpiryDate().isBefore(LocalDate.now());
     }
 }

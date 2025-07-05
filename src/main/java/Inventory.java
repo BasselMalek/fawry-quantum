@@ -67,10 +67,17 @@ public class Inventory {
         };
     }
 
-    public boolean hasItem(String id, int quantity ,int type) {
+    public boolean hasItem(String id, int quantity, int type) {
         ItemEntry i = getItem(id, type);
-        return i != null && i.getItem() != null && i.quantity >= quantity && (i.getItem().getType()==2)?!((Produce)i.getItem()).isExpired():true;
+        if (i == null || i.getItem() == null || i.getQuantity() < quantity) {
+            return false;
+        }
+        if (i.getItem().getType() == 2) {
+            return !((Perishable) i.getItem()).isExpired();
+        }
+        return true;
     }
+
     public int getTotalItems() {
         return onlineItems.size() + stableItems.size() + perishableItems.size();
     }

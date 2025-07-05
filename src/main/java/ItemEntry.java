@@ -1,6 +1,6 @@
 public class ItemEntry {
-        Item item;
-        int quantity;
+        private Item item;
+        private int quantity;
 
         public ItemEntry(Item item, int quantity){
             this.item = item;

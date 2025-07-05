@@ -1,8 +1,8 @@
-import java.util.Date;
+import java.time.LocalDate;
 
 public interface Perishable {
 
-    public Date getExpiryDate();
+    public LocalDate getExpiryDate();
     public Boolean isExpired();
 
 }

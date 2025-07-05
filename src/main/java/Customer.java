@@ -3,7 +3,7 @@ import java.util.List;
 
 public class Customer extends User {
     private double balance;
-    private Cart currentCart;
+    private final Cart currentCart;
 //    private List<Order> orderHistory;
 
     public Customer(String username, String email, String password, double initialBalance, Inventory inventory) {
@@ -58,7 +58,7 @@ public class Customer extends User {
 //        }
         //Update cx and store
         for (CartItem item : currentCart.getItems().values()) {
-            inventory.updateQuantity(item.item.getName(), item.item.getType(), inventory.getItem(item.item.getId(), item.item.getType()).quantity -item.quantity);
+            inventory.updateQuantity(item.getItem().getName(), item.getItem().getType(), inventory.getItem(item.getItem().getId(), item.getItem().getType()).getQuantity() - item.getQuantity());
         }
         modifyBalance(-total);
 
@@ -72,35 +72,6 @@ public class Customer extends User {
         return true;
     }
 
-
-
-    private void printCheckoutDetails(double subtotal, double shippingFee, double total) {
-        System.out.println("\n=== CHECKOUT DETAILS ===");
-        System.out.printf("Order subtotal: $%.2f%n", subtotal);
-        System.out.printf("Shipping fees: $%.2f%n", shippingFee);
-        System.out.printf("Total amount: $%.2f%n", total);
-        System.out.printf("Remaining balance: $%.2f%n", balance);
-    }
-
-//    private void handleShipping() {
-//        List<ShippableProduct> shippableItems = new ArrayList<>();
-//
-//        for (CartItem item : currentCart.getItems()) {
-//            if (item.getProduct().isShippable()) {
-//                shippableItems.add(item.getProduct());
-//            }
-//        }
-//
-//        if (!shippableItems.isEmpty()) {
-//            ShippingService shippingService = new ShippingService();
-//            shippingService.processShippableItems(shippableItems);
-//        }
-//    }
-//
-//    // Utility methods
-//    public void viewCart() {
-//        currentCart.displayCart();
-//    }
 //
 //    public void viewOrderHistory() {
 //        System.out.println("\n=== ORDER HISTORY ===");
