@@ -7,75 +7,6 @@ import java.util.Scanner;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 
 public class Main {
-
-    public static void displayItems(Inventory inventory, int type) {
-        HashMap<String, ItemEntry> items = inventory.getItems(type);
-        if (items == null || items.isEmpty()) {
-            System.out.println("No items available.");
-            return;
-        }
-
-        System.out.println("┌────────┬─────────────────────┬─────────────────────┬─────────┬────────┬────────────┬─────────┐");
-        System.out.println("│   ID   │        Name         │     Description     │  Price  │ Weight │   Expiry   │ Quantity│");
-        System.out.println("├────────┼─────────────────────┼─────────────────────┼─────────┼────────┼────────────┼─────────┤");
-
-        for (Map.Entry<String, ItemEntry> entry : items.entrySet()) {
-            ItemEntry itemEntry = entry.getValue();
-            Item item = itemEntry.getItem();
-
-            String id = String.format("%9s", item.getId());
-            String name = String.format("%-19s", truncate(item.getName(), 19));
-            String desc = String.format("%-19s", truncate(item.getDescription(), 19));
-            String price = String.format("$%-6.2f", item.getPrice());
-            String weight = item instanceof Shippable ? String.format("%-6.2f", ((Shippable) item).getWeight()) : "  N/A ";
-            String expiry = item instanceof Perishable ? String.format("%-10s", ((Perishable) item).getExpiryDate().toString()) : "    N/A   ";
-            String quantity = String.format("%-7d", itemEntry.getQuantity());
-
-            System.out.println("│ " + id + " │ " + name + " │ " + desc + " │ " + price + " │ " + weight + " │ " + expiry + " │ " + quantity + "│");
-        }
-
-        System.out.println("└────────┴─────────────────────┴─────────────────────┴─────────┴────────┴────────────┴─────────┘");
-    }
-
-    public static void displayCart(Customer cx) {
-        Map<String, CartItem> cart = cx.getCurrentCart().getItems();
-        if (cart == null || cart.isEmpty()) {
-            System.out.println("Your cart is empty.");
-            return;
-        }
-
-        System.out.println("┌────────┬─────────────────────┬─────────────────────┬─────────┬────────┬────────────┬─────────┐");
-        System.out.println("│   ID   │        Name         │     Description     │  Price  │ Weight │   Expiry   │ Quantity│");
-        System.out.println("├────────┼─────────────────────┼─────────────────────┼─────────┼────────┼────────────┼─────────┤");
-
-
-        for (Map.Entry<String, CartItem> entry : cart.entrySet()) {
-            CartItem cartItem = entry.getValue();
-            Item item = cartItem.getItem();
-
-            String id = String.format("%-6s", entry.getKey());
-            String name = String.format("%-19s", truncate(item.getName(), 19));
-            String desc = String.format("%-19s", truncate(item.getDescription(), 19));
-            String price = String.format("$%-6.2f", item.getPrice());
-            String weight = item instanceof Shippable ? String.format("%-6.2f", ((Shippable) item).getWeight()) : "  N/A ";
-            String expiry = item instanceof Perishable ? String.format("%-10s", ((Perishable) item).getExpiryDate().toString()) : "    N/A   ";
-            String quantity = String.format("%-7d", cartItem.getQuantity());
-
-
-            System.out.println("│ " + id + " │ " + name + " │ " + desc + " │ " + price + " │ " + weight + " │ " + expiry + " │ " + quantity + "│");
-        }
-
-        System.out.println("└────────┴─────────────────────┴─────────────────────┴─────────┴────────┴────────────┴─────────┘");
-        System.out.println("Subtotal: $" + String.format("%.2f", cx.getCurrentCart().getSubtotal()));
-        System.out.println("Shipping: $" + String.format("%.2f", cx.getCurrentCart().getShippingFee()));
-        System.out.println("Total: $" + String.format("%.2f", cx.getCurrentCart().getTotal()));
-    }
-
-    private static String truncate(String str, int maxLength) {
-        if (str == null) return "";
-        return str.length() > maxLength ? str.substring(0, maxLength - 3) + "..." : str;
-    }
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Inventory inventory = new Inventory();
@@ -134,8 +65,9 @@ public class Main {
 
         LocalDate cheeseExpiry = today.minusDays(2);
         inventory.addItem(new Produce("Cheese", "Cheddar cheese 8oz", 4.99, 0.5, cheeseExpiry), 3);
+        ShippingService shippingService = new ShippingService();
+        Customer cx = new Customer("poorQA", "poorQA@fawry.com", "qa123", "Giza Pyramids",1800.0, inventory, shippingService);
 
-        Customer cx = new Customer("poorQA", "poorQA@fawry.com", "qa123", 1800.0, inventory);
         loggedInUser = cx;
         System.out.println("Hi to Benji's Supermarket!");
         System.out.println("Log in to continue");
@@ -155,7 +87,8 @@ public class Main {
             System.out.println("1. Browse Products");
             System.out.println("2. View Cart");
             System.out.println("3. Checkout");
-            System.out.println("4. Log Out");
+            System.out.println("4. Refresh store (makes sure all produce are not expired)");
+            System.out.println("5. Log Out");
             System.out.println();
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
@@ -173,7 +106,7 @@ public class Main {
                         case 1:
                             System.out.println();
                             System.out.println("Produce Inventory:");
-                            displayItems(inventory, 2);
+                            inventory.displayItems(2);
                             System.out.println();
                             System.out.print("Enter item ID to add to cart or enter q to go back: ");
                             String produceId = scanner.next();
@@ -191,7 +124,7 @@ public class Main {
                         case 2:
                             System.out.println();
                             System.out.println("Shelf-Stables Inventory:");
-                            displayItems(inventory, 1);
+                            inventory.displayItems(1);
                             System.out.println();
                             System.out.print("Enter item ID to add to cart or enter q to go back: ");
                             String shelfId = scanner.next();
@@ -209,7 +142,7 @@ public class Main {
                         case 3:
                             System.out.println();
                             System.out.println("Gift Cards Inventory:");
-                            displayItems(inventory, 0);
+                            inventory.displayItems(0);
                             System.out.println();
                             System.out.print("Enter item ID to add to cart or enter q to go back: ");
                             String giftId = scanner.next();
@@ -218,7 +151,7 @@ public class Main {
                             }
                             System.out.print("Enter desired quantity to add to cart: ");
                             int gQuantity = scanner.nextInt();
-                            if (((Customer) loggedInUser).getCurrentCart().addItem(giftId, 1, gQuantity)) {
+                            if (((Customer) loggedInUser).getCurrentCart().addItem(giftId, 0, gQuantity)) {
                                 System.out.println("Item added to cart!");
                             } else {
                                 System.out.println("Invalid input.");
@@ -227,7 +160,7 @@ public class Main {
                     }
                     break;
                 case 2:
-                    displayCart((Customer) loggedInUser);
+                    ((Customer) loggedInUser).getCurrentCart().displayCart();
                     System.out.print("Enter item ID to remove from cart or enter q to go back: ");
                     String id = scanner.next();
                     if (id.equals("q")) {
@@ -241,6 +174,9 @@ public class Main {
                     boolean checkout = ((Customer) loggedInUser).checkout(inventory);
                     break;
                 case 4:
+                    inventory.cleanUpPerishables();
+                    break;
+                case 5:
                     loggedInUser = null;
                     break;
             }

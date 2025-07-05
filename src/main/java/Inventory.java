@@ -82,6 +82,44 @@ public class Inventory {
         return onlineItems.size() + stableItems.size() + perishableItems.size();
     }
 
+    public void displayItems(int type) {
+        HashMap<String, ItemEntry> items = this.getItems(type);
+        if (items == null || items.isEmpty()) {
+            System.out.println("No items available.");
+            return;
+        }
+
+        System.out.println("================== INVENTORY ==================");
+        System.out.println();
+
+        for (Map.Entry<String, ItemEntry> entry : items.entrySet()) {
+            ItemEntry itemEntry = entry.getValue();
+            Item item = itemEntry.getItem();
+
+            System.out.println("Item ID: " + item.getId());
+            System.out.println("  Name: " + item.getName());
+            System.out.println("  Description: " + item.getDescription());
+            System.out.println("  Price: $" + String.format("%.2f", item.getPrice()));
+
+            if (item instanceof Shippable) {
+                System.out.println("  Weight: " + String.format("%.2f", ((Shippable) item).getWeight()) + " lbs");
+            } else {
+                System.out.println("  Weight: N/A");
+            }
+
+            if (item instanceof Perishable) {
+                System.out.println("  Expiry Date: " + ((Perishable) item).getExpiryDate().toString());
+            } else {
+                System.out.println("  Expiry Date: N/A");
+            }
+
+            System.out.println("  Quantity Available: " + itemEntry.getQuantity());
+            System.out.println();
+        }
+
+        System.out.println("===============================================");
+    }
+
     public void cleanUpPerishables() {
         perishableItems.entrySet().removeIf(entry -> {
             Perishable perishable = (Perishable) entry.getValue().getItem();

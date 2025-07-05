@@ -1,16 +1,22 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Customer extends User {
     private double balance;
     private final Cart currentCart;
-//    private List<Order> orderHistory;
+    private String address;
+    private List<Order> orderHistory;
+    private final ShippingService shippingService;
 
-    public Customer(String username, String email, String password, double initialBalance, Inventory inventory) {
+
+    public Customer(String username, String email, String password, String address, double initialBalance, Inventory inventory, ShippingService shippingService) {
         super(username, email, password);
         this.balance = initialBalance;
+        this.address = address;
         this.currentCart = new Cart(inventory);
-//        this.orderHistory = new ArrayList<>();
+        this.orderHistory = new ArrayList<>();
+        this.shippingService = shippingService;
     }
 
     public double getBalance() {
@@ -21,9 +27,9 @@ public class Customer extends User {
         return currentCart;
     }
 
-//    public List<Order> getOrderHistory() {
-//        return new ArrayList<>(orderHistory);
-//    }
+    public List<Order> getOrderHistory() {
+        return new ArrayList<>(orderHistory);
+    }
 
     public boolean modifyBalance(double amount) {
         if (this.balance + amount >= 0) {
@@ -39,13 +45,16 @@ public class Customer extends User {
             return false;
         }
 
-        double subtotal = currentCart.getSubtotal();
-        double shippingFee = currentCart.getShippingFee();
-        double total = currentCart.getTotal();
+        String orderId = UUID.randomUUID().toString();
+        shippingService.createInternalShippingOrder(orderId, address, currentCart.getItems().values().stream().toList());
+        Order order = new Order(orderId, currentCart.getItems().values().stream().toList(), "Pending", shippingService);
+        orderHistory.add(order);
+
         // Check if cx is broke
-        if (balance < total) {
+        if (balance < order.getOrderTotal()) {
             System.out.println("Error: Insufficient balance");
-            System.out.printf("Required: $%.2f, Available: $%.2f%n", total, balance);
+            System.out.printf("Required: $%.2f, Available: $%.2f%n", order.getOrderTotal(), balance);
+            order.setStatus("Canceled");
             return false;
         }
         //Check if the store is broke
@@ -60,15 +69,12 @@ public class Customer extends User {
         for (CartItem item : currentCart.getItems().values()) {
             inventory.updateQuantity(item.getItem().getName(), item.getItem().getType(), inventory.getItem(item.getItem().getId(), item.getItem().getType()).getQuantity() - item.getQuantity());
         }
-        modifyBalance(-total);
-
-        //Add to history and print
-//        Order order = new Order(this, new ArrayList<>(currentCart.getItems()), subtotal, shippingFee);
-//        orderHistory.add(order);
-//        order.printCheckoutDetails();
+        modifyBalance(-order.getOrderTotal());
         currentCart.clear();
+        order.setStatus("Processing");
+        shippingService.printShippingOrderrReceipt(orderId);
+        order.printReceipt();
         System.out.println("Order completed successfully!");
-        // ShippingService.handleShipment(order);
         return true;
     }
 
@@ -86,9 +92,11 @@ public class Customer extends User {
 //            System.out.println();
 //        }
 //    }
+public String getAddress() {
+    return address;
+}
 
-    @Override
-    public String toString() {
-        return String.format("Customer: %s (Balance: $%.2f)", getUsername(), balance);
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

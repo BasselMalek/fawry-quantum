@@ -8,7 +8,44 @@ public class Cart {
     public Cart(Inventory inventory) {
         this.inventory = inventory;
     }
+    public  void displayCart() {
+        if (this.isEmpty()) {
+            System.out.println("Your cart is empty.");
+            return;
+        }
 
+        System.out.println("=================== YOUR CART ===================");
+        System.out.println();
+
+        items.forEach((String k , CartItem v)-> {
+            Item item = v.getItem();
+
+            System.out.println("Item ID: " + k);
+            System.out.println("  Name: " + item.getName());
+            System.out.println("  Description: " + item.getDescription());
+            System.out.println("  Price: $" + String.format("%.2f", item.getPrice()));
+
+            if (item instanceof Shippable) {
+                System.out.println("  Weight: " + String.format("%.2f", ((Shippable) item).getWeight()) + " lbs");
+            } else {
+                System.out.println("  Weight: N/A");
+            }
+
+            if (item instanceof Perishable) {
+                System.out.println("  Expiry Date: " + ((Perishable) item).getExpiryDate().toString());
+            } else {
+                System.out.println("  Expiry Date: N/A");
+            }
+
+            System.out.println("  Quantity: " + v.getQuantity());
+            System.out.println();
+        });
+
+        System.out.println("Subtotal: $" + String.format("%.2f",getSubtotal()));
+        System.out.println("Shipping: $" + String.format("%.2f",getShippingFee()));
+        System.out.println("Total: $" + String.format("%.2f",getTotal()));
+        System.out.println("===============================================");
+   }
     public boolean addItem(String itemId, int type, int quantity) {
         if (!inventory.hasItem(itemId, quantity, type)) {
             System.out.println("hit");
@@ -47,19 +84,11 @@ public class Cart {
     }
 
     public double getShippingFee() {
-        double totalWeight = items.values().stream()
-                .filter(cartItem -> cartItem.getItem() instanceof Shippable)
-                .mapToDouble(cartItem -> {
-                    Shippable shippable = (Shippable) cartItem.getItem();
-                    return shippable.getWeight() * cartItem.getQuantity();
-                })
-                .sum();
-
-        return totalWeight > 0 ? Math.max(19.99, totalWeight * 0.85) : 0.0;
+        return ShippingService.calculateShippingEstimate(items.values().stream().toList());
     }
 
     public double getTotal() {
-        return getSubtotal() + getShippingFee();
+        return getSubtotal()+ getSubtotal()*0.14 + getShippingFee();
     }
 
     public boolean isEmpty() {
