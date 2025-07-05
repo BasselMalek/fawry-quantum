@@ -67,7 +67,7 @@ public class Main {
         LocalDate cheeseExpiry = today.minusDays(2);
         inventory.addItem(new Produce("Cheese", "Cheddar cheese 8oz", 4.99, 0.5, cheeseExpiry), 3);
         ShippingService shippingService = new ShippingService();
-        Customer cx = new Customer("poorQA", "poorQA@fawry.com", "qa123", "Giza Pyramids", 180.0, inventory, shippingService);
+        Customer cx = new Customer("QA", "qa@fawry.com", "qa123", "Giza Pyramids", 180.0, inventory, shippingService);
 
         while (true) {
             System.out.println("Hi to Benji's Supermarket!");
