@@ -66,6 +66,11 @@ class Inventory {
             default -> false;
         };
     }
+
+    public boolean hasItem(String id, int quantity ,int type) {
+        ItemEntry i = getItem(id, type);
+        return i != null && i.getItem() != null && i.quantity >= quantity;
+    }
     public int getTotalItems() {
         return onlineItems.size() + stableItems.size() + perishableItems.size();
     }

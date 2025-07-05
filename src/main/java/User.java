@@ -5,6 +5,12 @@ public abstract class User {
     String email;
     int hashedPassword; //simple for demo, woukld use something from spring in irl apps.
 
+    public User( String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.setPassword(password);
+    }
+
     String getUsername(){
         return this.username;
     }
